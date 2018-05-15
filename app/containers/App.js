@@ -5,28 +5,28 @@ import { observer } from 'mobx-react';
 import MainContainer from './MainContainer'
 import {Container} from 'reactstrap'
 import {Row, Col} from 'reactstrap'
-import { Router, Route, withRouter  } from 'react-router';
+import { Router, Route, withRouter, Redirect  } from 'react-router';
 import { Switch, BrowserRouter , NavLink , HashRouter } from 'react-router-dom';
 import StartContainer from './StartContainer'
 import ResolveContainer from './ResolveContainer'
-
+import CreateTableContainer from './CreateTableContainer'
 @observer
-export default class App extends Component {
+class App extends Component {
 
   constructor (props) {
     super(props)
-    console.log(window.location)
+    this.props.history.push('/')
   }
   render() {
     return (
-      <HashRouter>
-        <Container fluid>
-           <Switch>
-             <Route exact path={ '/' } component={ StartContainer }/>
-             <Route exact path={ '/resolve' } component={ ResolveContainer }/>
-           </Switch>
+        <Container fluid style={{
+          height: '100vh'
+        }}>
+          <Route exact path={ '/' } component={ StartContainer }/>
+          <Route exact path={ '/create-table' } component={ CreateTableContainer }/>
+          <Route exact path={ '/resolve' } component={ ResolveContainer }/>
         </Container>
-      </HashRouter>
     );
   }
 }
+export default withRouter(App);
