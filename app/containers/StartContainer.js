@@ -4,11 +4,9 @@ import { observer } from 'mobx-react';
 import {Row, Col} from 'reactstrap'
 import { Router, Route, withRouter } from 'react-router';
 import { Switch, BrowserRouter , NavLink } from 'react-router-dom';
-import StartContainer from './StartContainer'
-import ResolveContainer from './ResolveContainer'
 
 @observer
-export default class MainContainer extends Component {
+export default class StartContainer extends Component {
 
   constructor (props) {
     super(props)
@@ -16,7 +14,9 @@ export default class MainContainer extends Component {
 
   render() {
     return (
-      <div>s</div>
+      <Row>
+        <Button>start</Button>
+      </Row>
     );
   }
 }
