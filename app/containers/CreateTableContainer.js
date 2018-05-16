@@ -4,41 +4,19 @@ import { observer } from 'mobx-react';
 import {Row, Col} from 'reactstrap'
 import TableStore from '../store/TableStore'
 import ReactTable from 'react-table'
+import { observable, computed, flow, action } from 'mobx';
 
 @observer
 export default class CreateTableContainer extends Component {
-
-
+  @computed TableStore;
 
   constructor (props) {
     super(props)
-    this.state = {
+    TableStore.data = TableStore.createData()
+    /*this.state = {
       data: this.createData()
-    }
+    }*/
   }
-
-  createData = () => {
-    let columns = TableStore.columns
-    let rows = TableStore.rows
-
-    let data = []
-    for (let i = 0; i < rows; i++)
-    {
-      let row = {}
-      for (let j = 0; j < columns; j++) {
-        let colName = 'B'+(j+1)
-        row[colName] = ''
-      }
-      data.push({
-        'firstColumn': 'A' + (i+1),
-        ...row,
-        'holdings': ''
-      })
-      console.log(data)
-    }
-    return data
-  }
-
 
   createColumns = () => {
     let columnsForTable = []
@@ -57,22 +35,7 @@ export default class CreateTableContainer extends Component {
         accessor: colName,
         Cell: (
           (cellInfo) => {
-            return (
-              <div
-                style={{ backgroundColor: "#fafafa" }}
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={e => {
-                  console.log(cellInfo)
-                  const data = [...this.state.data];
-                  data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
-                  this.setState({ data });
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: this.state.data[cellInfo.index][cellInfo.column.id]
-                }}
-              />
-            )
+            return this.createCell(cellInfo)
           }
         ),
       })
@@ -81,14 +44,36 @@ export default class CreateTableContainer extends Component {
     columnsForTable.push({
       Header: "Запасы",
       accessor: 'holdings',
+      Cell: (
+        (cellInfo) => {
+          return this.createCell(cellInfo)
+        }
+      ),
     })
     return columnsForTable
+  }
+
+  createCell = (cellInfo) => {
+    return (
+      <div
+        style={{ backgroundColor: "#fafafa" }}
+        contentEditable
+        onBlur={e => {
+          const data = [...TableStore.data];
+          data[cellInfo.index][cellInfo.column.id] = e.target.innerHTML;
+          TableStore.data = data
+        }}
+        dangerouslySetInnerHTML={{
+          __html: TableStore.data[cellInfo.index][cellInfo.column.id]
+        }}
+      />
+    )
   }
 
   createTable = () => {
     let columns = this.createColumns()
     console.log({
-      data: this.state.data,
+      data: TableStore.data,
       col: columns
     })
     return (
@@ -96,7 +81,7 @@ export default class CreateTableContainer extends Component {
         style={{
           maxHeight: "400px" // This will force the table body to overflow and scroll, since there is not enough room
         }}
-        data={this.state.data}
+        data={TableStore.data}
         columns={columns}
         defaultPageSize={10}
         showPagination={false}
@@ -123,6 +108,11 @@ export default class CreateTableContainer extends Component {
   *
   *  */
 
+  clickSolveButton = () => {
+    TableStore.dataNormalizeForCalculate(TableStore.data)
+    this.props.history.push('/resolve')
+  }
+
   render() {
     return (
       <Row className={'justify-content-center align-items-center height-100'}>
@@ -133,9 +123,7 @@ export default class CreateTableContainer extends Component {
             </Col>
           </Row>
           <Row className={'justify-content-center'}>
-            <Button color="primary" onClick={() => {
-              console.log(this.state.data)
-            }}>
+            <Button color="primary" onClick={this.clickSolveButton}>
               Решение
             </Button>
           </Row>
