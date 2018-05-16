@@ -76,7 +76,7 @@ class TableStore {
 
   dataNormalizeForCalculate(data) {
     let normalizeData = {
-      tarifs: [],
+      tariffs: [],
       inventory: [],
       holdings: []
     }
@@ -86,12 +86,15 @@ class TableStore {
         let row = []
         Object.entries(item).forEach(([key, value]) => {
           if (key.substring(0, key.length - 1) === 'B'){
-            row.push(value)
+            row.push({
+              value: value,
+              inventory: ''
+            })
           } else if (key === 'holdings') {
             normalizeData.holdings.push(value)
           }
         });
-        normalizeData.tarifs.push(row)
+        normalizeData.tariffs.push(row)
       } else {
         Object.entries(item).forEach(([key, value]) => {
           if (key.substring(0, key.length - 1) === 'B'){
@@ -104,7 +107,7 @@ class TableStore {
   }
 
   calculate = () => {
-    let s = {"tarifs":[["7","12","4","8","5"],["1","8","6","5","3"],["6","13","8","7","4"]],"inventory":["110","90","120","80","150"],"holdings":["180","350","20"]}
+    let s = {"tariffs":[["7","12","4","8","5"],["1","8","6","5","3"],["6","13","8","7","4"]],"inventory":["110","90","120","80","150"],"holdings":["180","350","20"]}
     DiffRentMethod.init(s)
   }
 }
