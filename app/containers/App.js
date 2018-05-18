@@ -20,7 +20,7 @@ class App extends Component {
   render() {
     return (
         <Container fluid style={{
-          height: '100vh'
+          height: '100vh',
         }}>
           <Route exact path={ '/' } component={ StartContainer }/>
           <Route exact path={ '/create-table' } component={ CreateTableContainer }/>
