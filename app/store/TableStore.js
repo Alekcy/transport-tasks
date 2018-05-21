@@ -46,7 +46,7 @@ class TableStore {
     let rows = this.rows
 
     let data = []
-    let row = this.createRows(columns)
+    let row = this.createNullRows(columns)
 
     for (let i = 0; i < rows; i++)
     {
@@ -62,10 +62,11 @@ class TableStore {
       ...row,
       'holdings': ''
     })
+    console.log(data)
     return data
   }
 
-  createRows = (columns) => {
+  createNullRows = (columns) => {
     let row = {}
     for (let j = 0; j < columns; j++) {
       let colName = 'B'+(j+1)
@@ -106,9 +107,71 @@ class TableStore {
     this.normalizeData = normalizeData
   }
 
+
+  dataNormalizeForTable(data) {
+    let newData = []
+    data.forEach((item) => {
+      console.log(item)
+      //let rows = this.rows
+      let tariffs = item.tariffs
+      let newDataItem = []
+      let deficiencyAndExcess = item.deficiencyAndExcess
+      let holdings = item.holdings
+      let inventories = item.inventory
+      let differences = item.differences
+
+      for (let i = 0; i < tariffs.length; i++)
+      {
+        let row = this.createRows(tariffs[i])
+        console.log(row)
+        let deficiencyAndExcessForRow = deficiencyAndExcess[i].deficiency !== null
+        ? `-${deficiencyAndExcess[i].deficiency}`
+        : `+${deficiencyAndExcess[i].excess}`
+
+        newDataItem.push({
+          'firstColumn': 'A' + (i+1),
+          ...row,
+          'deficiencyAndExcess': deficiencyAndExcessForRow,
+          'holdings': holdings[i]
+        })
+      }
+
+      newDataItem.push({
+        'firstColumn': 'Потребности',
+        ...inventories
+      })
+      newDataItem.push({
+        'firstColumn': 'Разности',
+        ...differences
+      })
+
+      newData.push(newDataItem)
+    })
+
+    
+    return newData
+  }
+
+  createRows = (row) => {
+    let newRow = {}
+    for (let j = 0; j < row.length; j++) {
+      let colName = 'B'+(j+1)
+      newRow[colName] = ''
+      if (row[j].inventory === null) {
+        newRow[colName] = String(row[j].value)
+      } else {
+        newRow[colName] = `(${row[j].value}) ${row[j].inventory}`
+      }
+    }
+    return newRow
+  }
+
   calculate = () => {
     let s = {"tariffs":[["7","12","4","8","5"],["1","8","6","5","3"],["6","13","8","7","4"]],"inventory":["110","90","120","80","150"],"holdings":["180","350","20"]}
-    DiffRentMethod.init(s)
+    let data = DiffRentMethod.init(s)
+    console.log(data)
+    data = this.dataNormalizeForTable(data)
+    console.log(data)
   }
 }
 export default new TableStore();

@@ -1,7 +1,7 @@
 class DiffRentMethod {
 
-  minTariffBefore = []
   data = null
+  allData = []
 
   init = (d) => {
 
@@ -18,9 +18,12 @@ class DiffRentMethod {
     this.data = d
     let inn = 0
 
-    while (!this.isAllInventoriesIsDistributed(this.data)) {
 
-      let data = this.data
+    let currentData = d
+    let globalData = []
+    while (!this.isAllInventoriesIsDistributed(currentData)) {
+
+      let data = currentData
       let minTariffs = this.getMinTariffs(data.tariffs)
 
       data.tariffs = this.distributeInventory(data, minTariffs)
@@ -42,10 +45,22 @@ class DiffRentMethod {
         newTariffs.push(tariffRow)
       })
       data.tariffs = newTariffs
-      this.data = data
-      this.minTariffBefore = []
+      console.log(data.tariffs[1])
+      globalData.push({
+        ...data,
+        deficiencyAndExcess: data.deficiencyAndExcess,
+        tariffs: data.tariffs.map((row) => {
+          return row
+        }),
+        holdings: data.holdings,
+        inventory: data.inventory,
+        differences: data.differences
+      })
+      currentData = data
+
       inn++;
     }
+    return globalData
   }
 
   isAllInventoriesIsDistributed = (data) => {
