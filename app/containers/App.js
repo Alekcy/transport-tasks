@@ -15,7 +15,7 @@ class App extends Component {
 
   constructor (props) {
     super(props)
-    this.props.history.push('/')
+    this.props.history.push('/resolve')
   }
   render() {
     return (
