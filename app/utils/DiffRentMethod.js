@@ -20,8 +20,6 @@ class DiffRentMethod {
 
     while (!this.isAllInventoriesIsDistributed(this.data)) {
 
-      console.log(inn)
-      console.log(this.data)
       let data = this.data
       let minTariffs = this.getMinTariffs(data.tariffs)
 
@@ -31,7 +29,6 @@ class DiffRentMethod {
 
       data.tariffs = this.addMinRentToRow(data)
 
-      //data.deficiencyAndExcess = null
 
       let newTariffs = []
       data.tariffs.forEach((tariffsRow, index) => {
@@ -47,19 +44,11 @@ class DiffRentMethod {
       data.tariffs = newTariffs
       this.data = data
       this.minTariffBefore = []
-      console.log(data)
-      /*if (inn === 3) {
-        break
-      }*/
       inn++;
-
-      //break
     }
-    console.log('endLOOOP')
   }
 
   isAllInventoriesIsDistributed = (data) => {
-    console.log(data.deficiencyAndExcess)
     if (data.deficiencyAndExcess !== undefined) {
       let check = true
       for (let i = 0; i< data.deficiencyAndExcess.length; i++) {
@@ -240,11 +229,6 @@ class DiffRentMethod {
     let minTariff = this.getMinTarrifByRedundantRows(data, redundantRowIndexes)
     let checkedTariffs = this.getCheckedTariffs(data)
 
-    console.log({
-      redundantRowIndexes:redundantRowIndexes,
-      minTariff:minTariff,
-      checkedTariffs:checkedTariffs
-    })
     for (let i = 0; i < data.tariffs[0].length; i++) {
       if (minTariff[i] !== null) {
         differences.push(Number(minTariff[i]) - Number(checkedTariffs[i]))
@@ -306,14 +290,11 @@ class DiffRentMethod {
   }
 
   addMinRentToRow = (data) => {
-    //TODO: несколько индексов
     let flawRowIndex = this.getFlawRowIndex(data)
     let tariffs = data.tariffs
 
     let minDifference = this.getMinDifference(data.differences)
 
-    console.log(flawRowIndex)
-    console.log(minDifference)
     flawRowIndex.forEach((item) => {
       let flawRow = []
       data.tariffs[item].forEach((tariff) => {
