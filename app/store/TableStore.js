@@ -6,7 +6,9 @@ class TableStore {
   @observable _columns = null;
   @observable _rows = null;
   @observable _data = null;
-  @observable _normalizeData = null
+  @observable _normalizeData = null;
+  @observable fetched = false;
+  @observable notNormalizeData = null
 
 
   set columns(value) {
@@ -109,6 +111,7 @@ class TableStore {
 
 
   dataNormalizeForTable(data) {
+    console.log(data)
     let newData = []
     data.forEach((item) => {
       console.log(item)
@@ -136,10 +139,12 @@ class TableStore {
         })
       }
 
+      inventories = this.createOtherRows(inventories)
       newDataItem.push({
         'firstColumn': 'Потребности',
         ...inventories
       })
+      differences = this.createOtherRows(differences)
       newDataItem.push({
         'firstColumn': 'Разности',
         ...differences
@@ -148,7 +153,7 @@ class TableStore {
       newData.push(newDataItem)
     })
 
-    
+    console.log(newData)
     return newData
   }
 
@@ -166,12 +171,27 @@ class TableStore {
     return newRow
   }
 
+  createOtherRows = (row) => {
+    console.log(row)
+    let newRow = {}
+    for (let j = 0; j < row.length; j++) {
+      let colName = 'B'+(j+1)
+      newRow[colName] = row[j]
+    }
+    return newRow
+  }
+
   calculate = () => {
-    let s = {"tariffs":[["7","12","4","8","5"],["1","8","6","5","3"],["6","13","8","7","4"]],"inventory":["110","90","120","80","150"],"holdings":["180","350","20"]}
-    let data = DiffRentMethod.init(s)
-    console.log(data)
+    this.fetched = true
+    //let s = {"tariffs":[["7","12","4","8","5"],["1","8","6","5","3"],["6","13","8","7","4"]],"inventory":["110","90","120","80","150"],"holdings":["180","350","20"]}
+    console.log(this.normalizeData)
+    //let d = {"tariffs":[[{"value":"1","inventory":""},{"value":"2","inventory":""}],[{"value":"2","inventory":""},{"value":"2","inventory":""}]],"inventory":["3","3"],"holdings":["3","3"]}
+
+    let data = DiffRentMethod.init(this.normalizeData)
+    this.notNormalizeData = data
     data = this.dataNormalizeForTable(data)
-    console.log(data)
+    this.data = data
+    this.fetched = false
   }
 }
 export default new TableStore();

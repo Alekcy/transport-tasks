@@ -1,8 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import TestStore from '../store/TestStore'
 import { Button, Collapse } from 'mdbreact';
 import { observer } from 'mobx-react';
-import MainContainer from './MainContainer'
 import {Container} from 'reactstrap'
 import {Row, Col} from 'reactstrap'
 import { Router, Route, withRouter, Redirect  } from 'react-router';
@@ -15,12 +13,13 @@ class App extends Component {
 
   constructor (props) {
     super(props)
-    this.props.history.push('/resolve')
+    this.props.history.push('/')
   }
   render() {
     return (
         <Container fluid style={{
           height: '100vh',
+          overflow: 'scroll'
         }}>
           <Route exact path={ '/' } component={ StartContainer }/>
           <Route exact path={ '/create-table' } component={ CreateTableContainer }/>

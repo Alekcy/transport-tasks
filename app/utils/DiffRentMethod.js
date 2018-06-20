@@ -5,10 +5,11 @@ class DiffRentMethod {
 
   init = (d) => {
 
+    console.log(JSON.stringify(d))
     d.tariffs = d.tariffs.map((item) => {
       return item.map((tariff) => {
         return {
-          value: tariff,
+          value: tariff.value,
           inventory: null,
           check: false,
           checkGlobal: false
@@ -22,6 +23,8 @@ class DiffRentMethod {
     let currentData = d
     let globalData = []
     while (!this.isAllInventoriesIsDistributed(currentData)) {
+
+      console.log(currentData)
 
       let data = currentData
       let minTariffs = this.getMinTariffs(data.tariffs)
@@ -57,8 +60,11 @@ class DiffRentMethod {
         differences: data.differences
       })
       currentData = data
-
       inn++;
+      /*if (inn === 5) {
+        console.log(data)
+        break
+      }*/
     }
     return globalData
   }
@@ -131,6 +137,7 @@ class DiffRentMethod {
     let tariffs = data.tariffs
     let inventories = data.inventory
     let holdings = data.holdings
+    console.log(minTariffs)
     inventories = this.getFreeInventories(data)
     for (let i = 0; i < tariffs[0].length; i++) {
       if (inventories[i] !== 0) {
